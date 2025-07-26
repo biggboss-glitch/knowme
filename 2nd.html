@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>KnowMe Chat</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <style>
+    body {
+      margin: 0;
+      font-family: "Segoe UI", sans-serif;
+      background: url('assets/login_bg.jpg') no-repeat center center fixed;
+      background-size: cover;
+      color: #000;
+    }
+
+    .chat-container {
+      max-width: 600px;
+      margin: 50px auto;
+      background: rgba(255, 255, 255, 0.35);
+      padding: 30px;
+      border-radius: 20px;
+      backdrop-filter: blur(10px);
+    }
+
+    h1 {
+      text-align: center;
+      margin-bottom: 10px;
+    }
+
+    .subtitle {
+      text-align: center;
+      font-style: italic;
+      margin-bottom: 20px;
+    }
+
+    textarea {
+      width: 100%;
+      padding: 15px;
+      border-radius: 10px;
+      border: none;
+      font-size: 16px;
+      resize: none;
+      height: 100px;
+    }
+
+    .chat-buttons {
+      display: flex;
+      gap: 10px;
+      margin-top: 10px;
+    }
+
+    button {
+      flex: 1;
+      padding: 12px;
+      border: none;
+      border-radius: 10px;
+      background-color: #00bcd4;
+      color: #fff;
+      font-size: 16px;
+      cursor: pointer;
+    }
+
+    button:hover {
+      background-color: #0192a1;
+    }
+
+    .response {
+      margin-top: 20px;
+      background: rgba(255, 255, 255, 0.5);
+      padding: 15px;
+      border-radius: 10px;
+      font-size: 18px;
+      min-height: 50px;
+    }
+
+    .echo {
+      margin-top: 10px;
+      font-style: italic;
+      color: #333;
+      text-align: center;
+    }
+
+    .timer {
+      text-align: center;
+      margin-top: 15px;
+      font-weight: bold;
+      font-size: 18px;
+      color: #e91e63;
+    }
+  </style>
+</head>
+<body>    
+
+<audio controls autoplay loop>
+    <source src="/assets/saiyaara-female.mp3">
+</audio>
+
+ <div class="chat-container">
+  <h1>KnowMe</h1>
+  <p class="subtitle">Hi <span id="userName">...</span>, your 60 seconds start now.</p>
+
+  <textarea id="userInput" placeholder="Share your thoughts..."></textarea>
+
+  <div class="chat-buttons">
+    <button id="micBtn">🎤 Speak</button>
+    <button id="sendBtn">💌 Send</button>
+  </div>
+
+  <div class="response" id="aiReply">Your AI response will appear here...</div>
+  <div class="echo" id="echoMemory">No data is saved. This is your space.</div>
+  <div id="countdown">60 seconds left</div>
+</div>
+
+
+
+<script>
+  const nickname = localStorage.getItem("nickname") || "Friend";
+  document.getElementById("userName").textContent = nickname;
+
+  const userInput = document.getElementById("userInput");
+  const sendBtn = document.getElementById("sendBtn");
+  const aiReply = document.getElementById("aiReply");
+  const echoMemory = document.getElementById("echoMemory");
+  const countdown = document.getElementById("countdown"); // ✅ only declared once
+
+  let time = 60;
+
+  let timer = setInterval(() => {
+    time--;
+    countdown.textContent = `${time} seconds left`;
+    if (time <= 0) {
+      clearInterval(timer);
+      userInput.disabled = true;
+      sendBtn.disabled = true;
+      aiReply.textContent = "⏳ Time’s up. Session ended.";
+
+    }
+  }, 1000);
+
+  const replies = [
+    "I hear you. Tell me more.",
+    "That’s a lot to carry. You’re strong.",
+    "I'm listening. It’s okay to feel this.",
+    "Your emotions matter, even here.",
+    "We’re in this little moment together."
+  ];
+
+  sendBtn.addEventListener("click", () => {
+    // Optional real backend integration (non-replacing)
+
+    const input = userInput.value.trim();
+    if (!input) return;
+    const reply = replies[Math.floor(Math.random() * replies.length)];
+    aiReply.textContent = "";
+    let i = 0;
+
+    const typeEffect = setInterval(() => {
+      if (i < reply.length) {
+        aiReply.textContent += reply.charAt(i);
+        i++;
+      } else {
+        clearInterval(typeEffect);
+      }
+    }, 40);
+
+    echoMemory.textContent = "↪ Echo: " + reply;
+    userInput.value = "";
+  });
+</script>
+
+</body>
+</html>
